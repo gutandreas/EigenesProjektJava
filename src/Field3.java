@@ -78,11 +78,44 @@ public class Field3 implements Cloneable{
     }
 
     public void killStone(int ring, int field) throws InvalidKillException {
-        if (array[ring][field] == (game.getCurrentPlayerIndex()+1)%2){
+        if (array[ring][field] == (game.getCurrentPlayerIndex()+1)%2 && checkKill(ring, field)){
             array[ring][field] = 9;
             printField();
         }
-        else throw new InvalidKillException("Auf diesem Feld befindet sich kein gegnerischer Stein");
+        else throw new InvalidKillException(
+                "Auf diesem Feld befindet sich kein gegnerischer Stein oder er liegt in einer Mühle (3er-Reihe)");
+    }
+
+    private boolean checkKill(int ring, int field){
+
+        int stone = array[ring][field];
+        return checkKillInRing(ring, field, stone) && checkKillBetweenRing(ring,field,stone);
+
+    }
+
+    private boolean checkKillInRing(int ring, int field, int stone){
+        boolean killOkay = true;
+        int fieldPos = field%2;
+        switch (fieldPos){
+            case 0:
+                if ((stone == array[ring][(field+1)%8] && stone == array[ring][(field+2)%8])
+                    || (stone == array[ring][(field-1)%8] && stone == array[ring][(field-2)%8])){
+                    killOkay = false;
+                }
+                break;
+            case 1:
+                if (stone == array[ring][(field-1)%8] && stone == array[ring][(field+1)%8]){
+                    killOkay = false;
+                }
+                break;
+        }
+
+        return killOkay;
+    }
+
+    private boolean checkKillBetweenRing(int ring, int field, int stone){
+        return !(stone == array[(ring+1)%3][field] && stone == array[(ring+2)%3][field]);
+
     }
 
 
