@@ -181,7 +181,6 @@ public class Field3 implements Cloneable{
                 }
                 System.out.println();
                 break;
-
             case 4:
                 space = "  ";
                 System.out.print("  ");
