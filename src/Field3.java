@@ -1,7 +1,7 @@
 public class Field3 implements Cloneable{
 
     private int[][] array = new int[3][8];
-    private Game game;
+    private final Game game;
 
     public Field3(Game game) {
         for (int i = 0; i < 3; i++){
@@ -14,6 +14,10 @@ public class Field3 implements Cloneable{
     public Field3(Field3 field){
         this.array = field.array;
         this.game = field.game;
+    }
+
+    public int[][] getArray() {
+        return array;
     }
 
     public void putStone(int row, int field) throws InvalidFieldException{
@@ -86,7 +90,7 @@ public class Field3 implements Cloneable{
                 "Auf diesem Feld befindet sich kein gegnerischer Stein oder er liegt in einer Mühle (3er-Reihe)");
     }
 
-    private boolean checkKill(int ring, int field){
+    public boolean checkKill(int ring, int field){
 
         int stone = array[ring][field];
         return checkKillInRing(ring, field, stone) && checkKillBetweenRing(ring,field,stone);
@@ -99,12 +103,12 @@ public class Field3 implements Cloneable{
         switch (fieldPos){
             case 0:
                 if ((stone == array[ring][(field+1)%8] && stone == array[ring][(field+2)%8])
-                    || (stone == array[ring][(field-1)%8] && stone == array[ring][(field-2)%8])){
+                    || (stone == array[ring][(field+7)%8] && stone == array[ring][(field+6)%8])){
                     killOkay = false;
                 }
                 break;
             case 1:
-                if (stone == array[ring][(field-1)%8] && stone == array[ring][(field+1)%8]){
+                if (stone == array[ring][(field+7)%8] && stone == array[ring][(field+1)%8]){
                     killOkay = false;
                 }
                 break;

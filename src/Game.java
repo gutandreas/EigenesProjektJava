@@ -13,7 +13,10 @@ public class Game {
     private Field3 field;
     private Field3 oldField;
     private boolean gameOver;
+    boolean phase1 = true;
+    boolean phase2 = false;
     private Scanner scanner = new Scanner(System.in);
+    private int modus;
 
     ArrayList<Player> playerArrayList = new ArrayList<>();
 
@@ -25,6 +28,18 @@ public class Game {
         round = 0;
         currentPlayer=playerArrayList.get(0);
         field = new Field3(this);
+        modus = 1;
+    }
+
+    public Game(Player player0) {
+        this.player0 = player0;
+        this.player1 = new Computer("Computer");
+        playerArrayList.add(0, player0);
+        playerArrayList.add(1, player1);
+        round = 0;
+        currentPlayer=playerArrayList.get(0);
+        field = new Field3(this);
+        modus = 2;
     }
 
 
@@ -53,10 +68,6 @@ public class Game {
     }
 
     public void play() throws InvalidFieldException{
-        boolean phase1 = true;
-        boolean phase2 = false;
-
-
 
         while (!gameOver){
 
@@ -69,16 +80,40 @@ public class Game {
                 break;
             }
 
+            phaseSetting();
+            jumpSetting();
+
             System.out.println(getCurrentPlayer().getName() + " ist an der Reihe!");
 
+            putOrMove();
 
-            if (round == NUMBEROFSTONES*2){
-                phase1 = false;
-                phase2 = true;}
+            field.printField();
 
-            if (round >= NUMBEROFSTONES*2 && getField().numberOfStonesCurrentPlayer()<=3){
-                getCurrentPlayer().setAllowedToJump(true);
+            if (field.checkTriple(oldField)){
+                kill();
             }
+
+            round++;
+            updateCurrentPlayer();
+        }
+    }
+
+    private void phaseSetting(){
+        if (round == NUMBEROFSTONES*2){
+            phase1 = false;
+            phase2 = true;}
+    }
+
+    private void jumpSetting(){
+        if (round >= NUMBEROFSTONES*2 && getField().numberOfStonesCurrentPlayer()<=3){
+            getCurrentPlayer().setAllowedToJump(true);
+        }
+    }
+
+    private void putOrMove() throws InvalidFieldException{
+
+        //SETZEN UND FAHREN: Menschlicher Spieler
+        if(!(getCurrentPlayer() instanceof Computer)){
 
             if (phase1){
 
@@ -87,9 +122,13 @@ public class Game {
                 System.out.println("Feld:");
                 int fieldNum = scanner.nextInt();
 
-                field.putStone(ringNum,fieldNum);
+                try {
+                    field.putStone(ringNum,fieldNum);}
+                catch (InvalidFieldException e){
+                    System.out.println("Saliii");
+                    e.printStackTrace();
+                }
 
-                //field.putStone(new Random().nextInt(2), new Random().nextInt(7));
             }
 
             if(phase2){
@@ -108,30 +147,43 @@ public class Game {
                     e.printStackTrace();
                 }
             }
-
-
-
-            field.printField();
-            if (field.checkTriple(oldField)){
-                System.out.println(currentPlayer.getName() + " hat eine 3er-Reihe!");
-                System.out.println("Welchen Stein möchtest du entfernen?");
-                System.out.println("Reihe");
-                int ringKill = scanner.nextInt();
-                System.out.println("Feld");
-                int fieldKill = scanner.nextInt();
-                try {
-                    field.killStone(ringKill,fieldKill);
-                } catch (InvalidKillException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            round++;
-            updateCurrentPlayer();
         }
 
+        //SETZEN UND FAHREN: Computerspieler
+        if (getCurrentPlayer() instanceof Computer){
 
+            if (phase1){
+                int[] temp = ((Computer) player1).compPutStone(field);
+                field.putStone(temp[0], temp[1]);
+            }
 
+        }
+    }
+
+    private void kill(){
+        //STEIN ENTFERNEN: Menschlicher Spieler
+        if(!(getCurrentPlayer() instanceof Computer)){
+            System.out.println(currentPlayer.getName() + " hat eine 3er-Reihe!");
+            System.out.println("Welchen Stein möchtest du entfernen?");
+            System.out.println("Reihe");
+            int ringKill = scanner.nextInt();
+            System.out.println("Feld");
+            int fieldKill = scanner.nextInt();
+            try {
+                field.killStone(ringKill,fieldKill);
+            } catch (InvalidKillException e) {
+                e.printStackTrace();
+            }}
+
+        //STEIN ENTFERNEN: Computerspieler
+        if(getCurrentPlayer() instanceof Computer){
+            int[] temp = ((Computer) player1).compKillStone(field);
+            try {
+                field.killStone(temp[0], temp[1]);
+            } catch (InvalidKillException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
 
