@@ -123,7 +123,7 @@ public class Game {
 
                 try {
                     field.putStone(ringNum,fieldNum);}
-                catch (InvalidFieldException e){
+                catch (InvalidFieldException | IndexOutOfBoundsException e){
                     System.out.println(e.getMessage());
                     putOrMove();
                 }
@@ -141,7 +141,7 @@ public class Game {
                 try {
                     field.move(ringNow,fieldNow,ringDest,fieldDest,getCurrentPlayer().isAllowedToJump());
                 }
-                catch (InvalidMoveException | InvalidFieldException e){
+                catch (InvalidMoveException | InvalidFieldException | IndexOutOfBoundsException e){
                     System.out.println(e.getMessage());
                     putOrMove();
                 }
@@ -169,7 +169,7 @@ public class Game {
             int fieldKill = scanner.nextInt();
             try {
                 field.killStone(ringKill,fieldKill);
-            } catch (InvalidKillException e) {
+            } catch (InvalidKillException | IndexOutOfBoundsException e) {
                 System.out.println(e.getMessage());
                 kill();
             }}

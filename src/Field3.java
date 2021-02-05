@@ -27,20 +27,21 @@ public class Field3 implements Cloneable{
         array[row][field] =  game.getCurrentPlayerIndex();
     }
 
-    public void move(int rowNow, int fieldNow, int rowDest, int fieldDest, boolean jump) throws InvalidMoveException, InvalidFieldException{
-        if (array[rowNow][fieldNow]!= game.getCurrentPlayerIndex()){
+    public void move(int ringNow, int fieldNow, int ringDest, int fieldDest, boolean jump) throws InvalidMoveException, InvalidFieldException{
+        if (array[ringNow][fieldNow]!= game.getCurrentPlayerIndex()){
             throw new InvalidMoveException("Kein bzw. nicht dein Stein");
         }
 
         if (jump){
-            putStone(rowDest,fieldDest);
-            array[rowNow][fieldNow] = 9;
+            putStone(ringDest,fieldDest);
+            array[ringNow][fieldNow] = 9;
         }
         else {
-            if ((fieldNow%2==1 && fieldNow==fieldDest && Math.abs(rowNow-rowDest)==1)
-                    || (rowNow-rowDest==0 && Math.abs((fieldNow%8)-(fieldDest%8))==1)){
-                putStone(rowDest,fieldDest);
-                array[rowNow][fieldNow] = 9;}
+            if ((fieldNow%2==1 && fieldNow==fieldDest && Math.abs(ringNow-ringDest)==1)
+                    || (ringNow-ringDest==0 && Math.abs((fieldNow)-(fieldDest))==1)
+                    || (ringNow-ringDest==0 && Math.abs((fieldNow)-(fieldDest))==7)){
+                putStone(ringDest,fieldDest);
+                array[ringNow][fieldNow] = 9;}
             else throw new InvalidMoveException("Kein möglicher Zielort");}
     }
 
