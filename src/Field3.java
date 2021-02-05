@@ -48,6 +48,8 @@ public class Field3 implements Cloneable{
         return checkBetweenRings(oldField) || checkInRing(oldField);
     }
 
+
+
     private boolean checkBetweenRings(Field3 oldField){
         for (int field = 1; field <7;){
             for (int player = 0; player < 2; player++){
@@ -88,6 +90,42 @@ public class Field3 implements Cloneable{
         }
         else throw new InvalidKillException(
                 "Auf diesem Feld befindet sich kein gegnerischer Stein oder er liegt in einer Mühle (3er-Reihe)");
+    }
+
+    public boolean isThereStoneToKill(){
+        int stone = (game.getCurrentPlayerIndex()+1)%2;
+        for (int ring = 0; ring < 3; ring++){
+            for (int field = 0; field < 7; field++){
+                if (array[ring][field] == stone && !isStoneInTriple(ring,field,stone)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isStoneInTriple(int ring, int field, int stone){
+        int fieldPosition = field%2;
+        switch (fieldPosition){
+            case 0:
+                if((stone==array[ring][(field+1)%8] && stone==array[ring][(field+2)%8])
+                    || (stone==array[ring][(field+7)%8] && stone==array[ring][(field+6)%8])){
+                    return true;}
+                    break;
+            case 1:
+                if((stone==array[ring][(field+7)%8] && stone==array[ring][(field+1)%8])
+                        || (stone==array[(ring+1)%8][field] && stone==array[(ring+2)%8][field])){
+                    return true;}
+                    break;
+            case 2:
+                if((stone==array[ring][(field+1)%8] && stone==array[ring][(field+2)%8])
+                        || (stone==array[ring][(field+7)%8] && stone==array[ring][(field+6)%8])){
+                    return true;}
+                    break;
+        }
+        return false;
+
+
     }
 
     public boolean checkKill(int ring, int field){

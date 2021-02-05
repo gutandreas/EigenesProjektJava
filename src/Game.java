@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
@@ -80,8 +79,8 @@ public class Game {
                 break;
             }
 
-            phaseSetting();
-            jumpSetting();
+            setGamesPhaseBooleans();
+            setCurrentPlayersJumpBoolean();
 
             System.out.println(getCurrentPlayer().getName() + " ist an der Reihe!");
 
@@ -89,7 +88,7 @@ public class Game {
 
             field.printField();
 
-            if (field.checkTriple(oldField)){
+            if (field.checkTriple(oldField) && field.isThereStoneToKill()){
                 kill();
             }
 
@@ -98,13 +97,13 @@ public class Game {
         }
     }
 
-    private void phaseSetting(){
+    private void setGamesPhaseBooleans(){
         if (round == NUMBEROFSTONES*2){
             phase1 = false;
             phase2 = true;}
     }
 
-    private void jumpSetting(){
+    private void setCurrentPlayersJumpBoolean(){
         if (round >= NUMBEROFSTONES*2 && getField().numberOfStonesCurrentPlayer()<=3){
             getCurrentPlayer().setAllowedToJump(true);
         }
@@ -125,10 +124,9 @@ public class Game {
                 try {
                     field.putStone(ringNum,fieldNum);}
                 catch (InvalidFieldException e){
-                    System.out.println("Saliii");
-                    e.printStackTrace();
+                    System.out.println(e.getMessage());
+                    putOrMove();
                 }
-
             }
 
             if(phase2){
@@ -143,8 +141,9 @@ public class Game {
                 try {
                     field.move(ringNow,fieldNow,ringDest,fieldDest,getCurrentPlayer().isAllowedToJump());
                 }
-                catch (InvalidMoveException e){
-                    e.printStackTrace();
+                catch (InvalidMoveException | InvalidFieldException e){
+                    System.out.println(e.getMessage());
+                    putOrMove();
                 }
             }
         }
@@ -156,7 +155,6 @@ public class Game {
                 int[] temp = ((Computer) player1).compPutStone(field);
                 field.putStone(temp[0], temp[1]);
             }
-
         }
     }
 
@@ -172,7 +170,8 @@ public class Game {
             try {
                 field.killStone(ringKill,fieldKill);
             } catch (InvalidKillException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
+                kill();
             }}
 
         //STEIN ENTFERNEN: Computerspieler
@@ -181,7 +180,8 @@ public class Game {
             try {
                 field.killStone(temp[0], temp[1]);
             } catch (InvalidKillException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
+                kill();
             }
         }
     }
