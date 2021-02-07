@@ -115,7 +115,7 @@ public class Field3 implements Cloneable{
                     break;
             case 1:
                 if((stone==array[ring][(field+7)%8] && stone==array[ring][(field+1)%8])
-                        || (stone==array[(ring+1)%8][field] && stone==array[(ring+2)%8][field])){
+                        || (stone==array[(ring+1)%3][field] && stone==array[(ring+2)%3][field])){
                     return true;}
                     break;
             case 2:
