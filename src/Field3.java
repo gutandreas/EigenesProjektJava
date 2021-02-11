@@ -52,7 +52,7 @@ public class Field3 implements Cloneable{
 
 
     private boolean checkBetweenRings(Field3 oldField){
-        for (int field = 1; field <7;){
+        for (int field = 1; field <8;){
             for (int player = 0; player < 2; player++){
                 if (array[0][field]==player && array[1][field]==player
                         && array[2][field]==player){
@@ -116,11 +116,6 @@ public class Field3 implements Cloneable{
             case 1:
                 if((stone==array[ring][(field+7)%8] && stone==array[ring][(field+1)%8])
                         || (stone==array[(ring+1)%3][field] && stone==array[(ring+2)%3][field])){
-                    return true;}
-                    break;
-            case 2:
-                if((stone==array[ring][(field+1)%8] && stone==array[ring][(field+2)%8])
-                        || (stone==array[ring][(field+7)%8] && stone==array[ring][(field+6)%8])){
                     return true;}
                     break;
         }
