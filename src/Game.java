@@ -11,7 +11,6 @@ public class Game {
     private Player currentPlayer;
     private Field3 field;
     private Field3 oldField;
-    private boolean gameOver;
     boolean phase1 = true;
     boolean phase2 = false;
     private Scanner scanner = new Scanner(System.in);
@@ -68,12 +67,11 @@ public class Game {
 
     public void play() throws InvalidFieldException{
 
-        while (!gameOver){
+        while (true){
 
             oldField = (Field3) getField().clone();
 
-            if (phase2==true && getField().numberOfStonesCurrentPlayer() <= 2){
-                gameOver = true;
+            if (phase2==true && (field.numberOfStonesCurrentPlayer() <= 2 || !field.checkIfAbleToMove())){
                 winner = playerArrayList.get((getCurrentPlayerIndex()+1)%2);
                 System.out.println(winner.getName() + " hat das Spiel gewonnen!");
                 break;
